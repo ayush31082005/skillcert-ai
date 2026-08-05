@@ -1,0 +1,13 @@
+node_modules/
+.env
+uploads/videos/*
+uploads/thumbnails/*
+uploads/temp/*
+uploads/certificates/*
+npm-debug.log*
+.DS_Store
+
+!uploads/videos/.gitkeep
+!uploads/thumbnails/.gitkeep
+!uploads/temp/.gitkeep
+!uploads/certificates/.gitkeep

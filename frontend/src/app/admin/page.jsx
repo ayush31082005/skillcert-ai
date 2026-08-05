@@ -1,0 +1,12 @@
+"use client";
+import Link from "next/link";
+import {useEffect,useState} from "react";
+import {Loading,StatusBadge} from "@/components/AppShell";
+import {apiRequest,formatDate} from "@/lib/api";
+export default function AdminDashboardPage(){
+ const [s,setS]=useState({loading:true,courses:[],tests:[],students:[],certificates:[]});
+ useEffect(()=>{Promise.all([apiRequest("/courses/admin/all"),apiRequest("/tests/admin/all"),apiRequest("/users/students"),apiRequest("/certificates/admin/all")]).then(([c,t,u,cert])=>setS({loading:false,courses:c.data?.courses||[],tests:t.data?.tests||[],students:u.data?.students||[],certificates:cert.data?.certificates||[]})).catch(()=>setS(x=>({...x,loading:false})));},[]);
+ if(s.loading)return <Loading/>;
+ return <><div className="page-head"><div><div className="eyebrow">Admin control center</div><h1>Platform overview</h1><p>Monitor learning operations and take action where it matters.</p></div><div className="actions"><Link className="btn btn-outline" href="/admin/courses/create">Create course</Link><Link className="btn btn-primary" href="/admin/videos/upload">Upload video</Link></div></div><div className="stats"><Stat l="Total students" v={s.students.length} i="♙"/><Stat l="Courses" v={s.courses.length} i="◇"/><Stat l="Tests generated" v={s.tests.length} i="✓"/><Stat l="Certificates" v={s.certificates.length} i="▣"/></div><div className="dashboard-grid"><div className="table-card"><div className="table-toolbar"><div><strong>Recent assessments</strong><small style={{display:"block",color:"var(--muted)"}}>Latest student activity</small></div><Link href="/admin/tests">View all</Link></div><table className="data-table"><thead><tr><th>Student</th><th>Course</th><th>Score</th><th>Status</th></tr></thead><tbody>{s.tests.slice(0,6).map(t=><tr key={t._id}><td>{t.userId?.name}</td><td>{t.courseId?.title}</td><td>{t.score??"—"}%</td><td><StatusBadge value={t.status}/></td></tr>)}</tbody></table></div><div className="card"><h3>Quick actions</h3>{[["Add a new course","/admin/courses/create"],["Upload a course lesson","/admin/videos/upload"],["Review student tests","/admin/tests"],["Manage certificates","/admin/certificates"]].map(([x,h])=><Link className="lesson-item" href={h} key={h} style={{marginTop:10}}><div className="lesson-number">→</div><strong>{x}</strong></Link>)}</div></div></>
+}
+function Stat({l,v,i}){return <div className="stat-card"><div><small>{l}</small><strong>{v}</strong></div><div className="stat-icon">{i}</div></div>}

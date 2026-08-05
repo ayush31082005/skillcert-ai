@@ -1,0 +1,11 @@
+"use client";
+import Link from "next/link";
+import {useParams} from "next/navigation";
+import {useEffect,useState} from "react";
+import {Brand,Loading} from "@/components/AppShell";
+import {apiRequest,formatDate} from "@/lib/api";
+export default function VerifyPage(){
+ const {certificateId}=useParams();const [data,setData]=useState(null),[error,setError]=useState(""),[loading,setLoading]=useState(true);
+ useEffect(()=>{if(certificateId==="demo"){setLoading(false);return}apiRequest(`/certificates/verify/${certificateId}`).then(r=>setData(r.data)).catch(e=>setError(e.message)).finally(()=>setLoading(false));},[certificateId]);
+ const c=data?.certificate;return <main style={{minHeight:"100vh",padding:"30px 18px"}}><div style={{maxWidth:880,margin:"auto"}}><Brand/><div className="card" style={{marginTop:40,padding:36,textAlign:"center"}}>{loading?<Loading/>:error||!c?<><div className="feature-icon" style={{margin:"0 auto 16px",background:"#fde9e7",color:"var(--danger)"}}>!</div><h1>Certificate not found</h1><p>{error||"Enter a valid certificate ID from a SkillCert credential."}</p></>:<><div className={`feature-icon`} style={{margin:"0 auto 18px",width:64,height:64,fontSize:26,background:data.valid?"var(--green-soft)":"#fde9e7",color:data.valid?"var(--green)":"var(--danger)"}}>{data.valid?"✓":"!"}</div><div className="eyebrow">{data.valid?"Verified credential":"Credential status"}</div><h1 style={{fontSize:38,margin:"12px"}}>{data.valid?"Certificate is valid":"Certificate has been revoked"}</h1><p>This credential was issued by SkillCert AI and matched our records.</p><div className="certificate-preview" style={{marginTop:30}}><small>CERTIFICATE OF COMPLETION</small><h1>{c.studentName}</h1><p>{c.studentEmail}</p><h2>{c.courseName}</h2><p>Score <strong>{c.score}%</strong> · Issued {formatDate(c.issuedAt)}</p><small>{c.certificateId}</small></div><a className="btn btn-primary" style={{marginTop:22}} href={c.certificateUrl} target="_blank">Open certificate PDF</a></>}</div><p style={{textAlign:"center",color:"var(--muted)",marginTop:18}}>Need your own credential? <Link href="/register" style={{color:"var(--green)",fontWeight:800}}>Start learning</Link></p></div></main>
+}
