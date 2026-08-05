@@ -3474,12 +3474,12 @@ h1, h2, h3, p, td, th, label, strong, small { overflow-wrap: anywhere; }
 .ic-title small { color: #174c36; font-size: 12px; font-weight: 900; letter-spacing: .48em; }
 .ic-title h2 { margin: 7px 0 12px; color: #15231d; font: 800 39px/1.1 "Manrope"; }
 .ic-title i { width: 290px; height: 2px; margin: auto; display: block; position: relative; background: #a8ca98; }
-.ic-presented { margin: 22px 0 8px; color: #69756f; font-size: 14px; }
+.ic-presented { margin: 22px 0 8px; color: #53645b; font-size: 14px; font-weight: 600; }
 .ic-student { margin: 0; color: #16804e; font: italic 800 clamp(36px,5vw,55px)/1.15 Georgia,serif; }
-.ic-email { margin: 4px 0 15px; color: #748078; font-size: 12px; }
-.ic-completion { margin: 0 0 8px; color: #69756f; font-size: 14px; }
-.ic-course { margin: 0; color: #17251f; font-size: 24px; }
-.ic-distinction { margin: 8px 0 0; color: #6b7770; font-size: 12px; }
+.ic-email { margin: 4px 0 15px; color: #5e6f66; font-size: 12px; font-weight: 600; }
+.ic-completion { margin: 0 0 8px; color: #53645b; font-size: 14px; font-weight: 600; }
+.ic-course { margin: 0; color: #13271e; font-size: 25px; font-weight: 900; }
+.ic-distinction { margin: 8px 0 0; color: #52635a; font-size: 12px; font-weight: 600; }
 .ic-footer {
   margin-top: 38px;
   position: relative;
@@ -3490,17 +3490,18 @@ h1, h2, h3, p, td, th, label, strong, small { overflow-wrap: anywhere; }
   gap: 24px;
 }
 .ic-details { display: grid; justify-items: start; text-align: left; }
-.ic-details small { margin-top: 9px; color: #75817a; font-size: 8px; letter-spacing: .1em; }
-.ic-details strong { margin-top: 3px; color: #174a35; font-size: 11px; overflow-wrap: anywhere; }
+.ic-details small { margin-top: 9px; color: #5d6e65; font-size: 8px; font-weight: 800; letter-spacing: .1em; }
+.ic-details strong { margin-top: 3px; color: #123f2d; font-size: 11px; font-weight: 900; overflow-wrap: anywhere; }
 .ic-signature { display: grid; justify-items: center; }
 .ic-signature em { color: #174a35; font: italic 30px/1 "Segoe Script","Brush Script MT",cursive; }
 .ic-signature i { width: 190px; height: 1px; margin: 5px 0 7px; background: #174a35; }
-.ic-signature strong { color: #174a35; font-size: 10px; letter-spacing: .08em; }
-.ic-signature small { margin-top: 3px; color: #75817a; font-size: 8px; letter-spacing: .13em; }
+.ic-signature strong { color: #123f2d; font-size: 10px; font-weight: 900; letter-spacing: .08em; }
+.ic-signature small { margin-top: 3px; color: #5d6e65; font-size: 8px; font-weight: 700; letter-spacing: .13em; }
 .ic-verify { display: grid; justify-items: end; gap: 5px; }
 .ic-qr { width: 70px; height: 70px; display: grid; place-items: center; color: #173f30; border: 5px dotted #173f30; font-size: 48px; line-height: 1; }
-.ic-verify small { color: #75817a; font-size: 8px; letter-spacing: .08em; }
-.ic-trust { margin-top: 17px; color: #819088; font-size: 8px; letter-spacing: .18em; }
+.ic-qr-image { width: 78px; height: 78px; display: block; padding: 3px; border: 2px solid #174a35; background: #fffef9; object-fit: contain; }
+.ic-verify small { color: #53645b; font-size: 8px; font-weight: 800; letter-spacing: .08em; }
+.ic-trust { margin-top: 17px; color: #607068; font-size: 8px; font-weight: 800; letter-spacing: .18em; }
 .certificate-actions { justify-content: center; margin-top: 20px; }
 
 @media (max-width: 720px) {
@@ -3514,5 +3515,30 @@ h1, h2, h3, p, td, th, label, strong, small { overflow-wrap: anywhere; }
   .ic-signature { grid-column: 1 / -1; grid-row: 1; }
   .ic-verify { justify-items: end; }
   .ic-qr { width: 55px; height: 55px; font-size: 35px; }
+  .ic-qr-image { width: 60px; height: 60px; }
   .certificate-actions { align-items: stretch; flex-direction: column; }
 }
+
+/* Premium creamy certificate palette */
+.institute-certificate { background: linear-gradient(135deg,#6f3f24,#d7a85b,#6f3f24); }
+.institute-certificate-inner {
+  border-color: #6f3f24;
+  outline-color: #d7a85b;
+  background: radial-gradient(circle at 50% 40%,#fffdf6 0,#fff7e7 68%,#f2dfbd 100%);
+}
+.institute-certificate-inner::before,
+.institute-certificate-inner::after {
+  background: linear-gradient(135deg,#6f3f24 0 43%,#d7a85b 43% 53%,transparent 53%);
+}
+.ic-brand > span { background: linear-gradient(145deg,#6f3f24,#a96e36); box-shadow: 0 7px 18px rgba(111,63,36,.18); }
+.ic-brand strong,.ic-title small,.ic-details strong,.ic-signature em,.ic-signature strong { color: #6f3f24; }
+.ic-brand small,.ic-presented,.ic-email,.ic-completion,.ic-distinction,
+.ic-details small,.ic-signature small,.ic-verify small,.ic-trust { color: #765f50; }
+.ic-seal { border-color: #f0d9ab; background: #8b5a2b; }
+.ic-seal i { background: #6f3f24; }
+.ic-title h2,.ic-course { color: #35261e; }
+.ic-title i { background: #d6aa62; }
+.ic-student { color: #9a5b2e; }
+.ic-signature i { background: #6f3f24; }
+.ic-qr { color: #6f3f24; border-color: #6f3f24; }
+.ic-qr-image { border-color: #8b5a2b; background: #fff7e7; }

@@ -183,6 +183,40 @@ const instituteBrandingElements = [
   },
 ];
 
+const instituteCertificateElements = [
+  { type: "rectangle", x: 0, y: 0, width: 842, height: 596, fillColor: "#fff7e7", borderColor: "#fff7e7", borderWidth: 1 },
+  { type: "rectangle", x: 17, y: 17, width: 808, height: 562, borderColor: "#6f3f24", borderWidth: 4 },
+  { type: "rectangle", x: 29, y: 29, width: 784, height: 538, borderColor: "#d7a85b", borderWidth: 1 },
+  { type: "rectangle", x: 17, y: 17, width: 155, height: 13, fillColor: "#8b5a2b", borderColor: "#8b5a2b", borderWidth: 1 },
+  { type: "rectangle", x: 670, y: 566, width: 155, height: 13, fillColor: "#8b5a2b", borderColor: "#8b5a2b", borderWidth: 1 },
+  { type: "rectangle", x: 52, y: 48, width: 42, height: 42, fillColor: "#8b5a2b", borderColor: "#8b5a2b", borderWidth: 1 },
+  { type: "text", value: "S", x: 52, y: 57, width: 42, height: 28, fontWeight: "bold", fontSize: 22, color: "#ffffff", alignment: "center" },
+  { type: "text", value: "SkillCert AI", x: 105, y: 53, width: 180, height: 25, fontWeight: "bold", fontSize: 17, color: "#6f3f24", alignment: "left" },
+  { type: "text", value: "INSTITUTE OF DIGITAL SKILLS", x: 105, y: 76, width: 210, height: 15, fontSize: 7, color: "#765f50", alignment: "left" },
+  { type: "rectangle", x: 746, y: 48, width: 48, height: 48, fillColor: "#8b5a2b", borderColor: "#d7a85b", borderWidth: 6 },
+  { type: "text", value: "SC", x: 746, y: 62, width: 48, height: 24, fontWeight: "bold", fontSize: 15, color: "#ffffff", alignment: "center" },
+  { type: "text", value: "C E R T I F I C A T E", x: 220, y: 112, width: 402, height: 20, fontWeight: "bold", fontSize: 10, color: "#8b5a2b", alignment: "center" },
+  { type: "text", value: "OF COMPLETION", x: 145, y: 140, width: 552, height: 45, fontFamily: "Times", fontWeight: "bold", fontSize: 35, color: "#35261e", alignment: "center" },
+  { type: "rectangle", x: 300, y: 190, width: 242, height: 2, fillColor: "#d6aa62", borderColor: "#d6aa62", borderWidth: 1 },
+  { type: "text", value: "This certificate is proudly presented to", x: 170, y: 215, width: 502, height: 25, fontWeight: "bold", fontSize: 12, color: "#765f50", alignment: "center" },
+  { type: "text", value: "{{studentName}}", x: 120, y: 250, width: 602, height: 52, fontFamily: "Times", fontWeight: "bold", fontSize: 37, color: "#9a5b2e", alignment: "center" },
+  { type: "text", value: "{{studentEmail}}", x: 170, y: 302, width: 502, height: 18, fontWeight: "bold", fontSize: 10, color: "#765f50", alignment: "center" },
+  { type: "text", value: "for successfully completing the professional course", x: 170, y: 332, width: 502, height: 22, fontWeight: "bold", fontSize: 11, color: "#765f50", alignment: "center" },
+  { type: "text", value: "{{courseName}}", x: 120, y: 360, width: 602, height: 38, fontWeight: "bold", fontSize: 23, color: "#35261e", alignment: "center" },
+  { type: "text", value: "with a score of {{score}}% and demonstrated practical proficiency", x: 150, y: 400, width: 542, height: 20, fontWeight: "bold", fontSize: 9, color: "#765f50", alignment: "center" },
+  { type: "text", value: "CERTIFICATE ID", x: 60, y: 466, width: 190, height: 14, fontWeight: "bold", fontSize: 7, color: "#68756d", alignment: "left" },
+  { type: "text", value: "{{certificateId}}", x: 60, y: 482, width: 220, height: 18, fontWeight: "bold", fontSize: 9, color: "#6f3f24", alignment: "left" },
+  { type: "text", value: "ISSUED ON", x: 60, y: 510, width: 150, height: 14, fontWeight: "bold", fontSize: 7, color: "#68756d", alignment: "left" },
+  { type: "text", value: "{{issuedDate}}", x: 60, y: 526, width: 150, height: 18, fontWeight: "bold", fontSize: 9, color: "#6f3f24", alignment: "left" },
+  { type: "text", value: "Ayush Chaubey", x: 315, y: 456, width: 212, height: 34, fontFamily: "Times", fontWeight: "bold", fontSize: 23, color: "#6f3f24", alignment: "center" },
+  { type: "rectangle", x: 330, y: 491, width: 182, height: 1, fillColor: "#6f3f24", borderColor: "#6f3f24", borderWidth: 1 },
+  { type: "text", value: "AYUSH CHAUBEY", x: 330, y: 499, width: 182, height: 15, fontWeight: "bold", fontSize: 9, color: "#6f3f24", alignment: "center" },
+  { type: "text", value: "FOUNDER & DIRECTOR", x: 330, y: 515, width: 182, height: 14, fontWeight: "bold", fontSize: 7, color: "#68756d", alignment: "center" },
+  { type: "qr", value: "{{verificationUrl}}", x: 690, y: 455, width: 88, height: 88 },
+  { type: "text", value: "SCAN TO VERIFY", x: 680, y: 547, width: 108, height: 12, fontWeight: "bold", fontSize: 7, color: "#68756d", alignment: "center" },
+  { type: "text", value: "VERIFIED  ·  SHAREABLE  ·  TRUSTED", x: 280, y: 550, width: 282, height: 12, fontWeight: "bold", fontSize: 6, color: "#78877f", alignment: "center" },
+];
+
 async function getOrCreateDefaultTemplate(adminUserId) {
   let template = await CertificateTemplate.findOne({
     isActive: true,
@@ -365,25 +399,12 @@ async function renderCertificate({
         }
       }
 
-      const templateElements = Array.isArray(
-        template.elements
-      )
-        ? template.elements
-        : [];
-
-      const hasInstituteSignature =
-        templateElements.some(
-          (element) =>
-            element.type === "text" &&
-            element.value === "FOUNDER & DIRECTOR"
-        );
-
-      const elements = hasInstituteSignature
-        ? templateElements
-        : [
-            ...templateElements,
-            ...instituteBrandingElements,
-          ];
+      /*
+       * Downloaded certificate ko website preview ke same authoritative
+       * institute layout me render karo. Isse legacy/custom sparse template
+       * ke elements overlap karke PDF ko bigaad nahi sakte.
+       */
+      const elements = instituteCertificateElements;
 
       for (const element of elements) {
         if (element.type === "text") {

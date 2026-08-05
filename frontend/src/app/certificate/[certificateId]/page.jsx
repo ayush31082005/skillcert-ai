@@ -28,7 +28,13 @@ export default function CertificatePage() {
             body: JSON.stringify({ testId: current.testId }),
           }).catch(() => null);
 
-          current = regenerated?.data?.certificate || current;
+          if (regenerated?.data?.certificate) {
+            current = {
+              ...current,
+              ...regenerated.data.certificate,
+              qrCodeDataUrl: current.qrCodeDataUrl,
+            };
+          }
         }
 
         if (active) setCertificate(current);
@@ -79,7 +85,14 @@ export default function CertificatePage() {
                 <div className="ic-signature">
                   <em>Ayush Chaubey</em><i /><strong>AYUSH CHAUBEY</strong><small>FOUNDER &amp; DIRECTOR</small>
                 </div>
-                <div className="ic-verify"><div className="ic-qr">▦</div><small>SCAN TO VERIFY</small></div>
+                <div className="ic-verify">
+                  {certificate?.qrCodeDataUrl ? (
+                    <img className="ic-qr-image" src={certificate.qrCodeDataUrl} alt="Scan to verify this certificate" />
+                  ) : (
+                    <div className="ic-qr">▦</div>
+                  )}
+                  <small>SCAN TO VERIFY</small>
+                </div>
               </footer>
               <div className="ic-trust">VERIFIED · SHAREABLE · TRUSTED</div>
             </div>

@@ -1,5 +1,6 @@
 import Certificate from "../models/Certificate.js";
 import Test from "../models/Test.js";
+import QRCode from "qrcode";
 import {
   AppError,
   sendSuccess,
@@ -155,10 +156,23 @@ export async function getCertificate(
     );
   }
 
+  const safeValue = safeCertificate(certificate);
+  safeValue.qrCodeDataUrl = await QRCode.toDataURL(
+    certificate.verificationUrl,
+    {
+      width: 240,
+      margin: 1,
+      color: {
+        dark: "#6f3f24",
+        light: "#fff7e7",
+      },
+    }
+  );
+
   return sendSuccess(response, {
     message: "Certificate fetched",
     data: {
-      certificate: safeCertificate(certificate),
+      certificate: safeValue,
     },
   });
 }
