@@ -4,6 +4,8 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { apiRequest } from "@/lib/api";
+import MainHeader, { Logo } from "./MainHeader";
+import Footer from "./Footer";
 
 const legacyStudentNav = [
   ["⌂", "Dashboard", "/dashboard"],
@@ -31,28 +33,18 @@ const adminNav = [
 
 export function Brand({ dark = false }) {
   return (
-    <Link className="brand" href="/">
-      <span className="brand-mark">S</span>
-      <span style={{ color: dark ? "white" : undefined }}>SkillCert AI</span>
+    <Link className="sc-logo" href="/" style={{ textDecoration: "none" }}>
+      <strong style={{ color: dark ? "#ffffff" : "inherit" }}>SkillCert AI</strong>
     </Link>
   );
 }
 
 export function PublicNav() {
-  return (
-    <nav className="public-nav">
-      <Brand />
-      <div className="public-nav-links">
-        <Link href="/courses">Courses</Link>
-        <Link href="/features">Features</Link>
-        <Link href="/about">About</Link>
-      </div>
-      <div className="nav-actions">
-        <Link className="btn btn-outline btn-sm" href="/login">Sign in</Link>
-        <Link className="btn btn-primary btn-sm" href="/register">Start learning →</Link>
-      </div>
-    </nav>
-  );
+  return <MainHeader />;
+}
+
+export function PublicFooter() {
+  return <Footer />;
 }
 
 export function StatusBadge({ value = "unknown" }) {
@@ -87,7 +79,7 @@ export default function AppShell({ children, admin = false }) {
   };
 
   return (
-    <div className="app-layout">
+    <div className={`app-layout${admin ? " admin-layout" : ""}`}>
       <aside className="sidebar">
         <Brand dark />
         <div className="sidebar-nav">
@@ -101,6 +93,7 @@ export default function AppShell({ children, admin = false }) {
           <small>Signed in as</small>
           <strong>{user?.name || "Loading..."}</strong>
           <small>{user?.role || ""}</small>
+          <button className="btn btn-outline btn-sm sidebar-logout" onClick={logout}>Logout</button>
         </div>
       </aside>
       <main className="app-main">

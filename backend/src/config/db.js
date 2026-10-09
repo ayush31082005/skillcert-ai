@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import dns from "node:dns";
 
 const connectDB = async () => {
   try {
@@ -6,6 +7,14 @@ const connectDB = async () => {
       throw new Error(
         "MONGODB_URI backend/.env file me add nahi hai"
       );
+    }
+
+    if (process.env.MONGODB_URI.startsWith("mongodb+srv://")) {
+      try {
+        dns.setServers(["8.8.8.8", "8.8.4.4", "1.1.1.1"]);
+      } catch (dnsErr) {
+        // Continue if setting custom DNS servers is restricted
+      }
     }
 
     mongoose.set("strictQuery", true);

@@ -36,6 +36,7 @@ export default function CourseCard({ course, progress = 0, featuredLabel = "" })
         <small className="course-field-label">Description</small>
         <p className="course-description">{course.description}</p>
         <div className="course-meta">
+          {Number.isFinite(course.lessonCount) && <span>{course.lessonCount} video {course.lessonCount === 1 ? "lesson" : "lessons"}</span>}
           <span>{course.numberOfQuestions || 5} question assessment</span>
           <span>{course.maximumAttempts || 2} attempts</span>
         </div>

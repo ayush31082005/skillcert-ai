@@ -150,6 +150,24 @@ async function getVideoDuration(videoPath) {
   return duration;
 }
 
+async function hasAudioStream(videoPath) {
+  ensureMediaBinaries();
+
+  const { stdout } = await execFileAsync(
+    ffprobeStatic.path,
+    [
+      "-v", "error",
+      "-select_streams", "a:0",
+      "-show_entries", "stream=index",
+      "-of", "csv=p=0",
+      videoPath,
+    ],
+    { maxBuffer: 10 * 1024 * 1024, windowsHide: true }
+  );
+
+  return Boolean(String(stdout).trim());
+}
+
 /**
  * Video audio ko chhote MP3 chunks me convert karta hai.
  *
@@ -404,6 +422,12 @@ export async function processVideo(videoId) {
           sourceVideoPath
         );
 
+      if (!(await hasAudioStream(sourceVideoPath))) {
+        throw new Error(
+          "Is video mein audio track nahi hai. Upload ke waqt lesson transcript add karein, phir AI processing retry karein."
+        );
+      }
+
       const audioFiles =
         await extractAudioChunks(
           sourceVideoPath,
@@ -465,6 +489,12 @@ export async function processVideo(videoId) {
             .filter(Boolean)
             .slice(0, 30)
         : [];
+
+    if (video.topics.length === 0) {
+      throw new Error(
+        "AI ne transcript se topics generate nahi kiye. Generate topics action se dobara try karein."
+      );
+    }
 
     video.processingStatus = "completed";
     video.processingError = "";

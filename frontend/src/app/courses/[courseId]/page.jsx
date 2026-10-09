@@ -99,6 +99,13 @@ export default function CourseDetailsPage() {
                         <small style={{ display: "block", color: "var(--muted)" }}>
                           {formatDuration(video.duration)} · {video.topics?.slice(0, 2).join(", ") || "Lesson"}
                         </small>
+                        {video.processingStatus !== "completed" && (
+                          <small className="lesson-ai-status">
+                            {video.processingStatus === "failed"
+                              ? "Video is available; AI summary needs a retry."
+                              : "Video is available; AI summary is processing."}
+                          </small>
+                        )}
                         <div className="progress-track lesson-progress">
                           <span style={{ width: `${percentage}%` }} />
                         </div>

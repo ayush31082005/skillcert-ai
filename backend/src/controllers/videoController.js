@@ -44,6 +44,7 @@ export async function uploadVideo(request, response) {
     title,
     description = "",
     order = 1,
+    transcript = "",
   } = request.body;
 
   if (!courseId || !title?.trim()) {
@@ -130,6 +131,11 @@ export async function uploadVideo(request, response) {
       description:
         typeof description === "string"
           ? description.trim()
+          : "",
+
+      transcript:
+        typeof transcript === "string"
+          ? transcript.trim()
           : "",
 
       fileName: videoFile.filename,
@@ -281,10 +287,6 @@ export async function getCourseVideos(
   const videoFilter = {
     courseId,
   };
-
-  if (request.user.role !== "admin") {
-    videoFilter.processingStatus = "completed";
-  }
 
   const videos = await Video.find(videoFilter)
     .select(
@@ -471,8 +473,7 @@ export async function updateVideo(
 
 /**
  * Failed/pending video processing ko dobara start karega.
- *
- * Ye tabhi chalega jab local temporary file abhi available ho.
+ * Local file na ho to processVideo Cloudinary URL se video download karega.
  */
 export async function retryProcessing(
   request,
@@ -498,14 +499,20 @@ export async function retryProcessing(
     );
   }
 
-  if (
-    !video.filePath ||
-    !fs.existsSync(video.filePath)
-  ) {
+  const hasLocalVideo = Boolean(
+    video.filePath && fs.existsSync(video.filePath)
+  );
+  const hasCloudinaryVideo = Boolean(video.videoUrl);
+
+  if (!hasLocalVideo && !hasCloudinaryVideo) {
     throw new AppError(
-      "Local temporary video available nahi hai. Video ko dobara upload karna hoga.",
+      "Video ka local file aur Cloudinary URL dono available nahi hain. Video ko dobara upload karein.",
       409
     );
+  }
+
+  if (typeof request.body?.transcript === "string" && request.body.transcript.trim()) {
+    video.transcript = request.body.transcript.trim();
   }
 
   video.processingStatus = "pending";

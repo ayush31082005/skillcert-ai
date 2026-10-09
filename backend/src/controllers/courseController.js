@@ -83,7 +83,6 @@ export async function getPublishedCourses(
     courseId: {
       $in: courses.map((course) => course._id),
     },
-    processingStatus: "completed",
   })
     .select(
       "courseId title description thumbnailUrl videoUrl duration order"

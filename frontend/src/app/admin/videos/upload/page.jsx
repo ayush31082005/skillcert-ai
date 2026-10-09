@@ -13,6 +13,7 @@ export default function UploadVideoPage() {
     courseId: "",
     title: "",
     description: "",
+    transcript: "",
     order: 1,
   });
   const [video, setVideo] = useState(null);
@@ -263,6 +264,17 @@ export default function UploadVideoPage() {
               })
             }
           />
+        </div>
+
+        <div className="form-group">
+          <label>Lesson transcript (optional)</label>
+          <textarea
+            className="textarea"
+            value={form.transcript}
+            onChange={(event) => setForm({ ...form, transcript: event.target.value })}
+            placeholder="Audio nahi hai ya speech clear nahi hai? Lesson ka transcript yahan paste karein. Isse summary aur assessment generate honge."
+          />
+          <small>Audio wale videos ka transcript automatically generate hota hai. Silent video ke liye transcript zaroor dein.</small>
         </div>
 
         <div

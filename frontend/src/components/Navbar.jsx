@@ -1,3 +1,4 @@
-export default function Navbar() {
-  return <div>Navbar</div>;
-}
+import MainHeader, { Logo } from "./MainHeader";
+
+export { Logo };
+export default MainHeader;

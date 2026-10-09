@@ -1,41 +1,50 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Brand, Empty, Loading, PublicNav } from "@/components/AppShell";
+import { useEffect, useMemo, useRef, useState, useCallback } from "react";
+import { Brand, Empty, Loading } from "@/components/AppShell";
 import CourseCard from "@/components/CourseCard";
+import MainHeader from "@/components/MainHeader";
+import Footer from "@/components/Footer";
 import { apiRequest } from "@/lib/api";
 
-// ─── HERO BACKGROUND SLIDES ──────────────────────────────────────────────────
-
-const HERO_SLIDES = [
+// ─── LUXURY COURSE CATALOGUE HERO SLIDES ──────────────────────────────────
+const heroSlides = [
   {
-    img: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1600&q=90",
-    tag: "AI-Powered Course Library",
-    title: "Master In-Demand Skills.",
-    highlight: "Build Your Future.",
-    sub: "Explore expert-curated video courses in Fullstack Web Dev, Artificial Intelligence, Product Design & Data Engineering.",
+    id: "slide-1",
+    kicker: "✦ VIDEO COURSES | AI-ASSISTED LEARNING",
+    titleLine1: "Explore courses &",
+    titleLine2: "master modern skills",
+    desc: "Browse expert-led video courses in Full-Stack, Python, and AI. Complete hands-on coding modules at your own pace.",
+    image: "/images/course-hero-slide-1.jpg",
+    alt: "Student learning video courses with SkillCert AI interactive editor",
+    feat1: ["HD Video", "Lessons"],
+    feat2: ["Interactive", "Quizzes"],
+    feat3: ["Self-Paced", "Access"],
   },
   {
-    img: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=1600&q=90",
-    tag: "Web Development Track",
-    title: "Build Real Products &",
-    highlight: "Deploy With Confidence.",
-    sub: "Learn React, Next.js, Node.js, and databases with hands-on video projects and smart quizzes.",
+    id: "slide-2",
+    kicker: "✦ PRACTICAL LABS | CLOUD & BACKEND TRACKS",
+    titleLine1: "Build real projects &",
+    titleLine2: "boost your career",
+    desc: "Hands-on cloud architecture, React, Node.js, and DevOps courses designed with industry engineers and mentors.",
+    image: "/images/course-hero-slide-2.jpg",
+    alt: "Developer mastering full stack engineering courses",
+    feat1: ["Hands-On", "Projects"],
+    feat2: ["Industry", "Mentors"],
+    feat3: ["1-on-1", "AI Guidance"],
   },
   {
-    img: "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=1600&q=90",
-    tag: "AI & Machine Learning",
-    title: "Understand AI Models &",
-    highlight: "Stay Ahead Of The Curve.",
-    sub: "From Python fundamentals to Generative AI & Neural Networks — master concepts step by step.",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1600&q=90",
-    tag: "UI/UX & Product Design",
-    title: "Craft Exceptional Apps &",
-    highlight: "Earn Verified Credentials.",
-    sub: "Design systems, Figma workflows, and interactive prototyping taught by industry design leads.",
+    id: "slide-3",
+    kicker: "✦ VERIFIED CREDENTIALS | PRODUCT & DESIGN",
+    titleLine1: "Complete courses &",
+    titleLine2: "earn certifications",
+    desc: "Master Figma design systems, AI tools, and frontend engineering. Pass course assessments to earn verified credentials.",
+    image: "/images/course-hero-slide-3.jpg",
+    alt: "Designer taking UI UX and product design courses",
+    feat1: ["Verified", "Certificates"],
+    feat2: ["Portfolio", "Ready"],
+    feat3: ["Lifetime", "Access"],
   },
 ];
 
@@ -52,28 +61,29 @@ const SEARCH_TAGS = ["#JavaScript", "#React", "#Python", "#Figma", "#AI & LLMs",
 
 const FAQS = [
   {
-    q: "Are the courses free to start?",
-    a: "Yes! You can browse and begin learning courses on SkillCert AI for free. Complete assessment quizzes to earn verified certificates.",
+    q: "How do I enroll in a course and begin learning?",
+    a: "Getting started is effortless. Simply create a free account, browse our course catalogue, and click on any course to access high-definition video modules, practical lessons, and assignments immediately.",
   },
   {
-    q: "How do I get my verified certificate?",
-    a: "Once you complete all lessons in a course and achieve a passing score on the assessment quiz, your digital certificate is automatically generated with a unique QR verification code.",
+    q: "Are the courses self-paced with lifetime access?",
+    a: "Yes, 100%! All enrolled courses come with unrestricted lifetime access. You can learn on your own schedule, revisit complex topics, and track your progress at any time across all devices.",
   },
   {
-    q: "Can I retake quiz assessments if I fail?",
-    a: "Yes, each course allows multiple attempts so you can review video materials and improve your score.",
+    q: "How do assessments and quizzes work?",
+    a: "Every course features structured milestone quizzes and practical assignments to validate your knowledge. After completing all video modules, you take an online assessment test that measures your practical understanding.",
   },
   {
-    q: "Are SkillCert certificates recognized by employers?",
-    a: "SkillCert AI certificates feature verifiable QR credentials that can be easily shared on LinkedIn, resumes, and portfolios to showcase proof of work.",
+    q: "How do I earn my verified SkillCert AI certificate?",
+    a: "Once you achieve a passing score on the course assessment, your tamper-proof certificate is instantly generated with a unique Certificate ID and verifiable QR code, ready to share on LinkedIn or download as a PDF.",
   },
-];
-
-const FEATURED_PATHS = [
-  { icon: "</>", title: "Web Development", skills: "HTML, CSS, JavaScript, React, Node.js & more", meta: "8 Courses · 120+ Hours", tone: "green" },
-  { icon: "▥", title: "Data Science", skills: "Python, Pandas, ML, Visualization & more", meta: "7 Courses · 90+ Hours", tone: "purple" },
-  { icon: "✎", title: "UI/UX Design", skills: "Figma, Design Systems, Prototyping & more", meta: "6 Courses · 60+ Hours", tone: "pink" },
-  { icon: "AI", title: "AI & Machine Learning", skills: "LLMs, Deep Learning, NLP, AI tools & more", meta: "6 Courses · 100+ Hours", tone: "teal" },
+  {
+    q: "Can I retake quiz assessments if I don't pass on the first attempt?",
+    a: "Yes! You can review the video lectures, examine your quiz performance feedback, and retake the test. There is no penalty for retakes—our goal is to help you master the material.",
+  },
+  {
+    q: "Are SkillCert AI credentials recognized by employers and recruiters?",
+    a: "SkillCert AI certificates feature instant cryptographic/QR verification links that recruiters and company HRs can scan directly to verify your authenticity, test score, and completion credentials.",
+  },
 ];
 
 const LEARNER_REVIEWS = [
@@ -111,36 +121,24 @@ export default function CoursesPage() {
   const [activeCategory, setActiveCategory] = useState("all");
   const [openFaq, setOpenFaq] = useState(0);
 
-  // Hero Image Slider State
-  const [slideIdx, setSlideIdx] = useState(0);
-  const [sliding, setSliding] = useState(false);
+  // Hero Image Slider State (Same as Home Page)
+  const [activeSlide, setActiveSlide] = useState(0);
+
+  const nextSlide = useCallback(() => {
+    setActiveSlide((prev) => (prev + 1) % heroSlides.length);
+  }, []);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      nextSlide();
+    }, 6000);
+    return () => clearInterval(timer);
+  }, [nextSlide]);
 
   // Scroll animation refs
-  const [heroRef, heroInView] = useInView(0.1);
   const [coursesRef, coursesInView] = useInView(0.1);
   const [certRef, certInView] = useInView(0.1);
   const [faqRef, faqInView] = useInView(0.1);
-
-  // Auto-swap Hero Background Slider every 4.5 seconds
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setSliding(true);
-      setTimeout(() => {
-        setSlideIdx((prev) => (prev + 1) % HERO_SLIDES.length);
-        setSliding(false);
-      }, 400);
-    }, 4500);
-    return () => clearInterval(timer);
-  }, []);
-
-  const goToSlide = (idx) => {
-    if (sliding) return;
-    setSliding(true);
-    setTimeout(() => {
-      setSlideIdx(idx);
-      setSliding(false);
-    }, 350);
-  };
 
   // Fetch REAL published courses from API
   useEffect(() => {
@@ -176,142 +174,101 @@ export default function CoursesPage() {
     });
   }, [dbCourses, query, activeCategory]);
 
-  const currentSlide = HERO_SLIDES[slideIdx];
+  const current = heroSlides[activeSlide];
 
   return (
     <>
-      <PublicNav />
-      <main className="cps-main">
+      <MainHeader />
+      <main className="sc-home">
 
-        {/* ─── 1. HERO SECTION WITH AUTO-SWAPPING BACKGROUND SLIDER ─── */}
-        <section className="cps-hero-slider" ref={heroRef}>
-
-          {/* Background Images with Cross-Fade */}
-          {HERO_SLIDES.map((slide, idx) => (
-            <div
-              key={idx}
-              className={`cps-hero-bg-slide ${idx === slideIdx ? "cps-slide-active" : ""} ${sliding && idx === slideIdx ? "cps-slide-exit" : ""}`}
-              style={{ backgroundImage: `url(${slide.img})` }}
-            >
-              <div className="cps-hero-overlay" />
-            </div>
-          ))}
-
-          {/* Hero Content */}
-          <div className="cps-hero-container">
-            <div className={`cps-hero-copy ${sliding ? "cps-content-exit" : "cps-content-enter"}`}>
-              <div className="cps-badge-tag">
-                <span className="cps-badge-pulse" />
-                {currentSlide.tag}
-              </div>
-
-              <h1 className="cps-hero-title">
-                {currentSlide.title} <br />
-                <span className="cps-highlight">{currentSlide.highlight}</span>
-              </h1>
-
-              <p className="cps-hero-sub">{currentSlide.sub}</p>
-
-              {/* Glassmorphic Search Bar */}
-              <div className="cps-search-box">
-                <svg className="cps-search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
-                </svg>
-                <input
-                  type="text"
-                  className="cps-search-input"
-                  placeholder="Search courses by title, topic, or technology (e.g. JavaScript, Python)..."
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                />
-                {query ? (
-                  <button className="cps-clear-btn" onClick={() => setQuery("")}>✕</button>
-                ) : (
-                  <span className="cps-search-shortcut">⌘K</span>
-                )}
-              </div>
-
-              {/* Search Tag Chips */}
-              <div className="cps-tag-chips">
-                <span className="cps-tag-label">Popular searches:</span>
-                {SEARCH_TAGS.map((tag) => (
-                  <button
-                    key={tag}
-                    className="cps-chip"
-                    onClick={() => setQuery(tag.replace("#", ""))}
-                  >
-                    {tag}
-                  </button>
-                ))}
-              </div>
-
-              {/* Stats Bar */}
-              <div className="cps-stats-row">
-                <div className="cps-stat-item">
-                  <strong>{dbCourses.length}</strong>
-                  <span>Published Courses</span>
-                </div>
-                <div className="cps-stat-item">
-                  <strong>2,500+</strong>
-                  <span>Active Learners</span>
-                </div>
-                <div className="cps-stat-item">
-                  <strong>98.4%</strong>
-                  <span>Pass Rate</span>
-                </div>
-                <div className="cps-stat-item">
-                  <strong>4.9★</strong>
-                  <span>Avg. Rating</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Slider Prev / Next Arrows */}
-          <button
-            className="cps-arrow cps-arrow-left"
-            onClick={() => goToSlide((slideIdx - 1 + HERO_SLIDES.length) % HERO_SLIDES.length)}
-            aria-label="Previous slide"
-          >
-            ‹
-          </button>
-          <button
-            className="cps-arrow cps-arrow-right"
-            onClick={() => goToSlide((slideIdx + 1) % HERO_SLIDES.length)}
-            aria-label="Next slide"
-          >
-            ›
-          </button>
-
-          {/* Slide Indicator Dots */}
-          <div className="cps-dots">
-            {HERO_SLIDES.map((_, idx) => (
-              <button
-                key={idx}
-                className={`cps-dot ${idx === slideIdx ? "cps-dot-active" : ""}`}
-                onClick={() => goToSlide(idx)}
-                aria-label={`Go to slide ${idx + 1}`}
+        {/* 1. Full-Screen Interactive Hero Slider Section (Same as Home Page) */}
+        <section className="sc-dark-top sc-hero-integrated-banner">
+          {/* Background Visual Carousel Canvas */}
+          <div className="sc-hero-bg-canvas">
+            {heroSlides.map((slide, idx) => (
+              <img
+                key={slide.id}
+                src={slide.image}
+                alt={slide.alt}
+                className={`sc-hero-bg-person ${idx === activeSlide ? "active" : "inactive"}`}
               />
             ))}
+            <div className="sc-hero-bg-overlay" />
+            <div className="sc-hero-bg-glow" />
           </div>
 
-          {/* Progress Bar */}
-          <div className="cps-hero-progress">
-            <div className="cps-hero-progress-bar" key={slideIdx} />
+          <div className="sc-hero-integrated-container">
+            {/* Left Text Copy with slide transition */}
+            <div className="sc-hero-copy sc-hero-copy-clean">
+              <div className="sc-hero-sub-kicker" key={`kicker-${activeSlide}`}>
+                <span>{current.kicker}</span>
+              </div>
+
+              <h1 className="sc-hero-serif-title" key={`title-${activeSlide}`}>
+                <span className="sc-hero-title-top">{current.titleLine1}</span>
+                <em className="sc-hero-gold-text">{current.titleLine2}</em>
+              </h1>
+
+              <p className="sc-hero-desc-text" key={`desc-${activeSlide}`}>
+                {current.desc}
+              </p>
+
+              <div className="sc-hero-actions-luxury">
+                <Link href="/register" className="sc-btn sc-btn-green sc-btn-hero-pill">
+                  <span>Start learning free</span>
+                  <span className="sc-btn-arrow">→</span>
+                </Link>
+                <a href="#courses" className="sc-hero-play-action">
+                  <span className="sc-play-circle-icon">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                      <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                  </span>
+                  <span className="sc-play-label">Explore courses</span>
+                </a>
+              </div>
+
+              <div className="sc-hero-vertical-features">
+                <div className="sc-vert-feat-item">
+                  <span className="sc-vert-bar" />
+                  <div className="sc-vert-feat-text">
+                    <strong>{current.feat1[0]}</strong>
+                    <small>{current.feat1[1]}</small>
+                  </div>
+                </div>
+
+                <div className="sc-vert-feat-item">
+                  <span className="sc-vert-bar" />
+                  <div className="sc-vert-feat-text">
+                    <strong>{current.feat2[0]}</strong>
+                    <small>{current.feat2[1]}</small>
+                  </div>
+                </div>
+
+                <div className="sc-vert-feat-item">
+                  <span className="sc-vert-bar" />
+                  <div className="sc-vert-feat-text">
+                    <strong>{current.feat3[0]}</strong>
+                    <small>{current.feat3[1]}</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Visual Ambient Space */}
+            <div className="sc-hero-right-ambient" />
           </div>
         </section>
 
         {/* ─── 2. REAL PUBLISHED COURSES CATALOGUE DIRECTORY ─── */}
-        <section className="cps-courses-sec" ref={coursesRef} id="courses">
-          <div className="cps-container">
+        <section className="cps-courses-white-catalogue" ref={coursesRef} id="courses">
+          <div className="cps-catalogue-container">
 
-            <div className={`cps-sec-head cps-animate ${coursesInView ? "cps-visible" : ""}`}>
-              <div>
-                <span className="cps-sub-tag">ALL COURSES</span>
-                <h2>Explore Published Courses</h2>
-                <p>Select a course to start streaming HD video lessons, taking assessments, and earning certificates.</p>
-              </div>
-              <div className="cps-count-badge">
+            <div className="cps-catalogue-head-clean">
+              <span className="cps-catalogue-sub-tag">✦ ALL COURSES</span>
+              <h2>Explore Published Courses</h2>
+              <p>Select a course to start streaming HD video lessons, taking assessments, and earning certificates.</p>
+              <div className="cps-catalogue-badge">
                 Showing <strong>{filtered.length}</strong> of {dbCourses.length} courses
               </div>
             </div>
@@ -321,7 +278,7 @@ export default function CoursesPage() {
             ) : loading ? (
               <Loading label="Loading published courses..." />
             ) : filtered.length > 0 ? (
-              <div className="course-grid">
+              <div className="cps-catalogue-grid-center">
                 {filtered.map((course, index) => (
                   <CourseCard
                     key={course._id}
@@ -351,183 +308,100 @@ export default function CoursesPage() {
           </div>
         </section>
 
-        {/* ─── 4. BLOCKCHAIN CERTIFICATE SHOWCASE ─── */}
-        <div className="cp-ref-area">
-          <section className="cp-paths">
-            <div className="cps-container">
-              <h2>Featured learning paths</h2>
-              <div className="cp-path-grid">
-                {FEATURED_PATHS.map((path) => (
-                  <Link href="/courses" className="cp-path-card" key={path.title}>
-                    <span className={`cp-path-icon cp-${path.tone}`}>{path.icon}</span>
-                    <div><strong>{path.title}</strong><p>{path.skills}</p><small>{path.meta}</small></div>
-                    <b>→</b>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </section>
-          <section className="cp-cert">
-            <div className="cp-cert-inner">
-              <div className="cp-cert-copy">
-                <span>VERIFIED. SHAREABLE. TRUSTED.</span>
-                <h2>Certificates that open doors</h2>
-                <p>Complete courses and earn verifiable SkillCert AI certificates with QR verification. Share on LinkedIn, resumes, and portfolios.</p>
-                <div className="cp-cert-features">
-                  <div><i>▦</i><p><strong>Unique Certificate ID</strong><small>Tamper-proof verification</small></p></div>
-                  <div><i>⌘</i><p><strong>QR Code Verification</strong><small>Instant authenticity check</small></p></div>
-                  <div><i>↗</i><p><strong>Share on LinkedIn</strong><small>One-click profile update</small></p></div>
-                  <div><i>✥</i><p><strong>Trusted by Employers</strong><small>Recognized industry-wide</small></p></div>
-                </div>
-              </div>
-              <div className="cp-certificate cp-certificate-document">
-                <img
-                  src="/images/skillcert-institute-certificate.svg"
-                  alt="SkillCert AI institute certificate with logo, verification seal, QR code and director signature"
-                />
-              </div>
-            </div>
-          </section>
-          <section className="cp-reviews">
-            <div className="cps-container">
-              <h2>Loved by learners worldwide</h2>
-              <div className="cp-review-grid">
-                {LEARNER_REVIEWS.map((review) => (
-                  <article key={review.name}><p>“{review.quote}”</p><footer><i>{review.initials}</i><span><strong>{review.name}</strong><small>{review.role}</small></span><b>★★★★★</b></footer></article>
-                ))}
-              </div>
-            </div>
-          </section>
-          <section className="cp-faq">
-            <div className="cps-container">
-              <h2>Frequently asked questions</h2>
-              <div className="cp-faq-grid">
-                {FAQS.map((faq, idx) => {
-                  const isOpen = openFaq === idx;
-                  return <div className={`cp-faq-item ${isOpen ? "open" : ""}`} key={faq.q}><button onClick={() => setOpenFaq(isOpen ? null : idx)}><strong>{faq.q}</strong><span>{isOpen ? "−" : "+"}</span></button>{isOpen && <p>{faq.a}</p>}</div>;
-                })}
-              </div>
-            </div>
-          </section>
-          <section className="cp-cta">
-            <div className="cp-rocket">↗</div>
-            <div><h2>Ready to build your next skill?</h2><p>Join 2,500+ learners and start your journey with SkillCert AI today.</p></div>
-            <div><Link href="/register" className="cp-cta-primary">Start learning free →</Link><Link href="#courses" className="cp-cta-secondary">Explore all courses</Link></div>
-          </section>
-        </div>
-
-        <section className="cps-cert-sec" ref={certRef}>
-          <div className="cps-cert-bg-overlay" />
-          <div className="cps-container" style={{ position: "relative", zIndex: 2 }}>
-            <div className="cps-cert-grid">
-
-              <div className={`cps-cert-copy cps-animate ${certInView ? "cps-visible" : ""}`}>
-                <span className="cps-sub-tag" style={{ color: "#b9da73" }}>VERIFIED CREDENTIALS</span>
-                <h2>Earn Shareable Certificates That Employers Trust</h2>
-                <p>
-                  Every course completed on SkillCert AI unlocks an official Certificate of Completion. Embedded with tamper-proof QR verification, your credentials can be shared directly on LinkedIn, resumes, and portfolios.
+        {/* ─── 3. LUXURY GOLD CERTIFICATE SHOWCASE (Full Width, No Green) ─── */}
+        <section className="sc-gold-cert-section">
+          <div className="sc-cert-container">
+            <div className="sc-cert-grid-layout">
+              <div className="sc-cert-copy-area">
+                <span className="sc-hero-sub-kicker">✦ VERIFIED CREDENTIALS</span>
+                <h2 className="sc-cert-serif-title">
+                  Certificates that <br />
+                  <em className="sc-hero-gold-text">open doors</em>
+                </h2>
+                <p className="sc-cert-desc-text">
+                  Complete courses and earn verifiable SkillCert AI certificates with QR verification. Share on LinkedIn, resumes, and portfolios to prove your industry expertise.
                 </p>
-                <ul className="cps-cert-list">
-                  <li><span>✓</span> Unique Certificate ID &amp; Live QR Code</li>
-                  <li><span>✓</span> PDF Download &amp; One-Click LinkedIn Sharing</li>
-                  <li><span>✓</span> 100% Free Verification for Employers</li>
-                </ul>
-                <div className="cps-cert-actions">
-                  <Link href="/register" className="cps-btn-lime">
-                    Start Learning Free →
+                <div className="sc-cert-action-btns">
+                  <Link href="/register" className="sc-btn sc-btn-green sc-btn-hero-pill">
+                    <span>Start Learning Free</span>
+                    <span className="sc-btn-arrow">→</span>
                   </Link>
-                  <Link href="/verify" className="cps-btn-glass">
-                    Verify a Certificate
+                  <Link href="/verify" className="sc-btn sc-btn-ghost">
+                    <span>Verify a Certificate</span>
                   </Link>
                 </div>
               </div>
 
-              <div className={`cps-cert-visual cps-animate ${certInView ? "cps-visible" : ""}`} style={{ transitionDelay: "150ms" }}>
-                <div className="cps-cert-frame">
+              <div className="sc-cert-visual-area">
+                <div className="sc-cert-preview-card">
                   <img
-                    src="https://images.unsplash.com/photo-1544717305-2782549b5136?w=800&q=80"
-                    alt="Official SkillCert Certificate Preview"
-                    className="cps-cert-img"
+                    src="/images/skillcert-institute-certificate.svg"
+                    alt="SkillCert AI official certificate preview with QR verification seal"
+                    className="sc-cert-svg-img"
                   />
-                  <div className="cps-cert-floating">
-                    <div className="cps-cf-seal">🏅</div>
-                    <div>
-                      <strong>Official SkillCert Certificate</strong>
-                      <small>QR Code Verified on Blockchain</small>
-                    </div>
-                  </div>
                 </div>
               </div>
-
             </div>
           </div>
         </section>
 
-        {/* ─── 5. FREQUENTLY ASKED QUESTIONS ─── */}
-        <section className="cps-faq-sec" ref={faqRef}>
-          <div className="cps-container">
-
-            <div className={`cps-sec-center cps-animate ${faqInView ? "cps-visible" : ""}`}>
-              <span className="cps-sub-tag">GOT QUESTIONS?</span>
-              <h2>Frequently Asked Questions</h2>
-              <p>Everything you need to know about SkillCert AI courses and certificates.</p>
+        {/* ─── 4. LUXURY COURSE FAQ SECTION ─── */}
+        <section className="sc-course-faq-section" ref={faqRef}>
+          <div className="sc-faq-container">
+            <div className="sc-faq-head">
+              <span className="sc-hero-sub-kicker">✦ FREQUENTLY ASKED QUESTIONS</span>
+              <h2>
+                Got questions about <br />
+                <em className="sc-hero-gold-text">our courses?</em>
+              </h2>
+              <p>
+                Everything you need to know about enrollments, video lessons, assessment tests, and verifiable certificates.
+              </p>
             </div>
 
-            <div className="cps-faq-list">
+            <div className="sc-faq-list">
               {FAQS.map((faq, idx) => {
                 const isOpen = openFaq === idx;
                 return (
                   <div
-                    key={faq.q}
-                    className={`cps-faq-item ${isOpen ? "cps-faq-open" : ""} cps-animate ${faqInView ? "cps-visible" : ""}`}
-                    style={{ transitionDelay: `${idx * 60}ms` }}
-                    onClick={() => setOpenFaq(isOpen ? null : idx)}
+                    key={idx}
+                    className={`sc-faq-item ${isOpen ? "sc-faq-item-open" : ""}`}
                   >
-                    <div className="cps-faq-header">
-                      <h3>{faq.q}</h3>
-                      <span className="cps-faq-toggle">{isOpen ? "−" : "+"}</span>
-                    </div>
-                    {isOpen && <p className="cps-faq-body">{faq.a}</p>}
+                    <button
+                      type="button"
+                      className="sc-faq-question-btn"
+                      onClick={() => setOpenFaq(isOpen ? null : idx)}
+                      aria-expanded={isOpen}
+                    >
+                      <span>{faq.q}</span>
+                      <span className="sc-faq-icon-circle">
+                        {isOpen ? "−" : "+"}
+                      </span>
+                    </button>
+                    {isOpen && (
+                      <div className="sc-faq-answer">
+                        <p>{faq.a}</p>
+                      </div>
+                    )}
                   </div>
                 );
               })}
             </div>
 
-          </div>
-        </section>
-
-        {/* ─── 6. VIBRANT CTA BANNER ─── */}
-        <section className="cps-cta-banner">
-          <div className="cps-cta-orb" />
-          <div className="cps-cta-inner">
-            <h2>Ready to build your next skill?</h2>
-            <p>Join 2,500+ active learners advancing their careers with SkillCert AI today.</p>
-            <div className="cps-cta-btns">
-              <Link href="/register" className="cps-btn-lime">
-                Start Learning Free →
-              </Link>
-              <Link href="#courses" className="cps-btn-glass">
-                Explore All Courses
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* ─── FOOTER ─── */}
-        <footer className="cps-footer">
-          <div className="cps-container">
-            <div className="cps-footer-inner">
-              <Brand dark />
-              <p>© 2026 SkillCert AI. Learn with purpose. Build with confidence. Get certified.</p>
-              <div className="cps-footer-links">
-                <Link href="/courses">Courses</Link>
-                <Link href="/verify">Verify Certificate</Link>
-                <Link href="/register">Sign Up</Link>
-                <Link href="/login">Sign In</Link>
+            <div className="sc-faq-cta-bottom">
+              <div>
+                <h4>Still have questions?</h4>
+                <p>Our learning support team and AI mentors are here to guide you 24/7.</p>
               </div>
+              <Link href="/about" className="sc-btn sc-btn-ghost">
+                <span>Contact Support</span>
+              </Link>
             </div>
           </div>
-        </footer>
+        </section>
+
+        {/* ─── 5. UNIFIED LUXURY FOOTER ─── */}
+        <Footer />
 
       </main>
     </>

@@ -1,60 +1,63 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { apiRequest } from "@/lib/api";
+import MainHeader from "@/components/MainHeader";
+import Footer from "@/components/Footer";
+import LearningSteps from "@/components/LearningSteps";
 
-const fallbackCourses = [
-  { _id: "web", title: "Full Stack Web Development", description: "HTML, CSS, JavaScript, React, Node.js and MongoDB", category: "Beginner", image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&q=85" },
-  { _id: "python", title: "Python for Data Science", description: "Data Analysis, Pandas, NumPy, Visualization and ML basics", category: "Beginner", image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=85" },
-  { _id: "design", title: "UI/UX Design Fundamentals", description: "Figma, User Research, Wireframing and Prototyping", category: "Beginner", image: "https://images.unsplash.com/photo-1558655146-d09347e92766?w=800&q=85" },
-  { _id: "analytics", title: "Data Science & Analytics", description: "Python, SQL, Tableau, Statistics and Machine Learning", category: "Intermediate", image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=85" },
+const heroSlides = [
+  {
+    id: "slide-1",
+    kicker: "✦ AI-POWERED LEARNING | BUILD REAL SKILLS",
+    titleLine1: "Learn skills that",
+    titleLine2: "move you forward",
+    desc: "AI-powered courses, hands-on projects, and real-world skills to help you build your dream career.",
+    image: "/images/slide-1.jpg",
+    alt: "Student learning Python and software development with SkillCert AI",
+    feat1: ["Job-Ready", "Skills"],
+    feat2: ["Verified", "Certificates"],
+    feat3: ["Lifetime", "Access"],
+  },
+  {
+    id: "slide-2",
+    kicker: "✦ CLOUD & FULL-STACK | INDUSTRY CERTIFIED",
+    titleLine1: "Master tech &",
+    titleLine2: "level up your career",
+    desc: "Hands-on cloud architecture, React, DevOps, and backend development crafted with industry mentors.",
+    image: "/images/slide-2.jpg",
+    alt: "Developer learning cloud and full stack engineering with interactive AI",
+    feat1: ["Hands-On", "Labs"],
+    feat2: ["Industry", "Badges"],
+    feat3: ["1-on-1", "AI Mentor"],
+  },
+  {
+    id: "slide-3",
+    kicker: "✦ UI/UX & AI SYSTEMS | DESIGN YOUR FUTURE",
+    titleLine1: "Design & build with",
+    titleLine2: "creative confidence",
+    desc: "From Figma design systems to AI-assisted workflows, build standout portfolios that recruiters love.",
+    image: "/images/slide-3.jpg",
+    alt: "UI UX designer mastering AI-powered product design and workflows",
+    feat1: ["Figma & Code", "Projects"],
+    feat2: ["Verified", "Portfolio"],
+    feat3: ["Fast-Track", "Growth"],
+  },
 ];
 
-const benefits = [
-  ["⌘", "Job-ready skills", "In-demand & practical"],
-  ["▣", "Verified certificates", "Share on LinkedIn"],
-  ["▶", "Learn at your pace", "Lifetime access"],
-  ["AI", "AI study assistant", "Personalized help"],
-];
-
-const why = [
-  ["✣", "Curated by Experts", "Industry experts design every course."],
-  ["▦", "Project Based", "Build real projects and strengthen your portfolio."],
-  ["⌘", "AI-Powered", "Personalized learning with AI assistance."],
-  ["♙", "Career Focused", "Learn skills that employers actually want."],
-];
-
-const testimonials = [
-  ["SkillCert AI helped me build real projects and land my first developer role.", "Riya Kapoor", "Frontend Developer", "RK"],
-  ["The practical approach and exercises made complex topics easy to learn.", "Karan Malhotra", "Data Analyst", "KM"],
-  ["The certificates and projects gave me the confidence to switch my career.", "Meera Joshi", "UI/UX Designer", "MJ"],
-];
-
-const paths = [
-  ["</>", "Web Development", "12 courses"],
-  ["▥", "Data Science", "10 courses"],
-  ["✥", "UI/UX Design", "8 courses"],
-  ["◎", "AI & Machine Learning", "9 courses"],
-];
-
-function Logo() {
-  return <Link href="/" className="sc-logo"><span>S</span><strong>SkillCert AI</strong></Link>;
-}
-
-function CourseTile({ course, index }) {
-  const image = course.thumbnailUrl || course.thumbnail || course.image || fallbackCourses[index]?.image;
-  const href = String(course._id).length > 10 ? `/courses/${course._id}` : "/courses";
+function CourseTile({ course }) {
+  const image = course.thumbnail || course.thumbnailUrl;
   return (
     <article className="sc-course-card">
-      <Link href={href} className="sc-course-image">
-        <img src={image} alt="" />
-        <span>◉ {course.videoCount || 8 + index * 2} Lessons</span>
+      <Link href={`/courses/${course._id}`} className="sc-course-image">
+        {image ? <img src={image} alt="" /> : <span className="sc-course-no-image">{course.title}</span>}
+        {Number.isFinite(course.lessonCount) && course.lessonCount > 0 && <span>{course.lessonCount} Lessons</span>}
       </Link>
       <div className="sc-course-body">
         <h3>{course.title}</h3>
-        <p>{course.description}</p>
-        <div><span>♟ {course.level || course.category || "Beginner"}</span><span className="sc-rating">★ 4.{8 - index % 2} ({850 + index * 130})</span></div>
+        {course.description && <p>{course.description}</p>}
+        <div>{(course.level || course.category) && <span>{course.level || course.category}</span>}</div>
       </div>
     </article>
   );
@@ -62,121 +65,175 @@ function CourseTile({ course, index }) {
 
 export default function HomePage() {
   const [courses, setCourses] = useState([]);
+  const [coursesLoading, setCoursesLoading] = useState(true);
+  const [coursesError, setCoursesError] = useState(false);
+  const [activeSlide, setActiveSlide] = useState(0);
 
   useEffect(() => {
     apiRequest("/courses")
       .then((res) => setCourses(res.data?.courses || []))
-      .catch(() => {});
+      .catch(() => setCoursesError(true))
+      .finally(() => setCoursesLoading(false));
   }, []);
 
-  const shownCourses = [...courses.slice(0, 4), ...fallbackCourses].slice(0, 4);
+  const nextSlide = useCallback(() => {
+    setActiveSlide((prev) => (prev + 1) % heroSlides.length);
+  }, []);
+
+  // Auto slide swap every 6 seconds
+  useEffect(() => {
+    const timer = setInterval(() => {
+      nextSlide();
+    }, 6000);
+    return () => clearInterval(timer);
+  }, [nextSlide]);
+
+  const shownCourses = courses.slice(0, 4);
+  const current = heroSlides[activeSlide];
 
   return (
     <main className="sc-home">
-      <section className="sc-dark-top">
-        <nav className="sc-nav">
-          <Logo />
-          <div className="sc-nav-links">
-            <Link href="/courses">Courses⌄</Link>
-            <Link href="#paths">Paths</Link>
-            <Link href="/features">Features</Link>
-            <Link href="#pricing">Pricing</Link>
-            <Link href="/about">About</Link>
-          </div>
-          <div className="sc-nav-actions">
-            <Link href="/login" className="sc-btn sc-btn-ghost">Sign in</Link>
-            <Link href="/register" className="sc-btn sc-btn-green">Start learning <span>→</span></Link>
-          </div>
-        </nav>
+      {/* Fixed Header */}
+      <MainHeader />
 
-        <div className="sc-hero">
-          <div className="sc-hero-copy">
-            <span className="sc-kicker">✦ AI-POWERED LEARNING</span>
-            <h1>Learn skills that<br /><em>move you forward</em></h1>
-            <p>AI-powered courses, hands-on projects, and real-world skills to help you build your dream career.</p>
-            <div className="sc-hero-actions">
-              <Link href="/register" className="sc-btn sc-btn-green">Start learning free <span>→</span></Link>
-              <Link href="/courses" className="sc-btn sc-btn-ghost">Explore courses</Link>
-            </div>
-            <div className="sc-proof">
-              <div className="sc-avatars"><span>R</span><span>K</span><span>M</span><span>2K+</span></div>
-              <strong>Join 2,000+ learners building real skills</strong>
-            </div>
-          </div>
-
-          <div className="sc-hero-visual">
-            <img src="/images/home-learner-hero.png" alt="Student learning online with SkillCert AI" />
-            <div className="sc-float sc-progress-float"><small>Your Progress</small><strong>78%</strong><div><i /></div><small>Keep going! 🚀</small></div>
-            <div className="sc-float sc-ai-float"><b>AI</b><div><strong>AI Mentor</strong><small>Get help 24/7</small></div></div>
-            <div className="sc-float sc-cert-float"><b>✓</b><div><small>Certificate earned</small><strong>Python for Data Science</strong></div></div>
-          </div>
+      {/* 1. Full-Screen Interactive Hero Slider Section */}
+      <section className="sc-dark-top sc-hero-integrated-banner">
+        {/* Background Visual Carousel Canvas */}
+        <div className="sc-hero-bg-canvas">
+          {heroSlides.map((slide, idx) => (
+            <img
+              key={slide.id}
+              src={slide.image}
+              alt={slide.alt}
+              className={`sc-hero-bg-person ${idx === activeSlide ? "active" : "inactive"}`}
+            />
+          ))}
+          <div className="sc-hero-bg-overlay" />
+          <div className="sc-hero-bg-glow" />
         </div>
 
-        <div className="sc-benefit-strip">
-          {benefits.map(([icon, title, sub]) => <div key={title}><span>{icon}</span><p><strong>{title}</strong><small>{sub}</small></p></div>)}
+        <div className="sc-hero-integrated-container">
+          {/* Left Text Copy with slide transition */}
+          <div className="sc-hero-copy sc-hero-copy-clean">
+            <div className="sc-hero-sub-kicker" key={`kicker-${activeSlide}`}>
+              <span>{current.kicker}</span>
+            </div>
+
+            <h1 className="sc-hero-serif-title" key={`title-${activeSlide}`}>
+              <span className="sc-hero-title-top">{current.titleLine1}</span>
+              <em className="sc-hero-gold-text">{current.titleLine2}</em>
+            </h1>
+
+            <p className="sc-hero-desc-text" key={`desc-${activeSlide}`}>
+              {current.desc}
+            </p>
+
+            <div className="sc-hero-actions-luxury">
+              <Link href="/register" className="sc-btn sc-btn-green sc-btn-hero-pill">
+                <span>Start learning free</span>
+                <span className="sc-btn-arrow">→</span>
+              </Link>
+              <Link href="/courses" className="sc-hero-play-action">
+                <span className="sc-play-circle-icon">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                  </svg>
+                </span>
+                <span className="sc-play-label">Explore courses</span>
+              </Link>
+            </div>
+
+            <div className="sc-hero-vertical-features">
+              <div className="sc-vert-feat-item">
+                <span className="sc-vert-bar" />
+                <div className="sc-vert-feat-text">
+                  <strong>{current.feat1[0]}</strong>
+                  <small>{current.feat1[1]}</small>
+                </div>
+              </div>
+
+              <div className="sc-vert-feat-item">
+                <span className="sc-vert-bar" />
+                <div className="sc-vert-feat-text">
+                  <strong>{current.feat2[0]}</strong>
+                  <small>{current.feat2[1]}</small>
+                </div>
+              </div>
+
+              <div className="sc-vert-feat-item">
+                <span className="sc-vert-bar" />
+                <div className="sc-vert-feat-text">
+                  <strong>{current.feat3[0]}</strong>
+                  <small>{current.feat3[1]}</small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Visual Ambient Space */}
+          <div className="sc-hero-right-ambient" />
         </div>
       </section>
 
-      <section className="sc-main">
-        <div className="sc-trusted">
-          <small>Trusted by learners from top companies</small>
-          <div><b>Google</b><b>▦ Microsoft</b><b>amazon</b><b>♧ airbnb</b><b>◉ Spotify</b><b>Adobe</b><b>∞ Meta</b></div>
+      {/* 2. Our Courses Section (immediately after the hero) */}
+      <section className="sc-courses-white-section" id="courses">
+        <div className="sc-courses-container">
+          <div className="sc-courses-head">
+            <span className="sc-courses-kicker">✦ OUR COURSES</span>
+            <h2>
+              Popular courses to kickstart <em>your journey</em>
+            </h2>
+            <p>
+              Explore industry-vetted courses with interactive AI mentorship, practical assignments, and verified certificates.
+            </p>
+          </div>
+
+          <div className="sc-course-grid">
+            {shownCourses.map((course) => <CourseTile course={course} key={course._id} />)}
+          </div>
+
+          {coursesLoading && <p className="sc-courses-empty">Loading courses...</p>}
+          {!coursesLoading && coursesError && <p className="sc-courses-empty">Courses are temporarily unavailable. Please try again later.</p>}
+          {!coursesLoading && !coursesError && shownCourses.length === 0 && <p className="sc-courses-empty">No courses are available yet.</p>}
+
+          <div className="sc-courses-bottom-cta">
+            <Link href="/courses" className="sc-btn-view-all">
+              <span>View all courses</span>
+              <span>→</span>
+            </Link>
+          </div>
         </div>
-
-        <section className="sc-why">
-          <div className="sc-why-title"><span>WHY SKILLCERT AI</span><h2>Everything you need to<br /><em>learn and grow</em></h2></div>
-          {why.map(([icon, title, text]) => <article key={title}><i>{icon}</i><strong>{title}</strong><p>{text}</p></article>)}
-        </section>
-
-        <section className="sc-section">
-          <div className="sc-section-head">
-            <div><span>EXPLORE COURSES</span><h2>Popular courses to<br />kickstart <em>your journey</em></h2></div>
-            <Link href="/courses">View all courses　→</Link>
-          </div>
-          <div className="sc-course-grid">{shownCourses.map((course, i) => <CourseTile course={course} index={i} key={course._id || i} />)}</div>
-        </section>
-
-        <section className="sc-stats">
-          {[["♟","2,000+","Active learners"],["▣","150+","Practical courses"],["⌁","98%","Completion rate"],["⬟","10K+","Certificates issued"]].map(([i,n,l]) => <div key={l}><i>{i}</i><p><strong>{n}</strong><span>{l}</span></p></div>)}
-        </section>
-
-        <section className="sc-section sc-love">
-          <div className="sc-section-head">
-            <div><span>LEARNER LOVE</span><h2>Real learners.<br />Real <em>success stories.</em></h2></div>
-            <Link href="/about">View all stories　→</Link>
-          </div>
-          <div className="sc-testimonials">
-            {testimonials.map(([quote,name,role,initials]) => <article key={name}><p>“{quote}”</p><footer><i>{initials}</i><span><strong>{name}</strong><small>{role}</small></span><b>★★★★★</b></footer></article>)}
-          </div>
-        </section>
-
-        <section className="sc-paths" id="paths">
-          <div className="sc-path-head"><div><span>LEARNING PATHS</span><h2>Follow a path. Achieve <em>your goals.</em></h2></div><Link href="/courses">Explore all paths　→</Link></div>
-          <div>{paths.map(([icon,title,count]) => <Link href="/courses" key={title}><i>{icon}</i><p><strong>{title}</strong><small>{count}</small></p><b>→</b></Link>)}</div>
-        </section>
-
-        <section className="sc-choice" id="pricing">
-          <div><span>WHY LEARNERS CHOOSE US</span><h2>Built for modern learners<br />like you.</h2><i /></div>
-          {[["♧","Flexible Learning","Learn anytime, anywhere. On any device."],["♙","Affordable Pricing","High quality education that fits your budget."],["◎","Lifetime Access","Pay once and access forever."]].map(([icon,title,text]) => <article key={title}><i>{icon}</i><p><strong>{title}</strong><span>{text}</span></p></article>)}
-        </section>
-
-        <section className="sc-final-cta">
-          <div><span>GET STARTED TODAY</span><h2>Your future starts<br />with <em>one click.</em></h2><p>Join 2,000+ learners and start building real skills today. No credit card required.</p></div>
-          <div className="sc-cta-orbit">⌁　　✥<br />　　♧　　</div>
-          <div className="sc-final-actions"><Link href="/register" className="sc-btn sc-btn-green">Start learning free　→</Link><Link href="/courses" className="sc-btn sc-btn-ghost">Browse courses</Link></div>
-        </section>
       </section>
 
-      <footer className="sc-footer">
-        <div className="sc-footer-grid">
-          <div><Logo /><p>Learn with purpose. Build with confidence.<br />Practical skills for real careers.</p><div className="sc-socials">♥　in　◉　▶　◎</div></div>
-          <div><strong>Platform</strong><Link href="/courses">Courses</Link><Link href="#paths">Paths</Link><Link href="/features">Features</Link><Link href="#pricing">Pricing</Link></div>
-          <div><strong>Company</strong><Link href="/about">About us</Link><Link href="/about">Blog</Link><Link href="/about">Careers</Link><Link href="/about">Contact</Link></div>
-          <div><strong>Resources</strong><Link href="/about">Help Center</Link><Link href="/about">Terms of Service</Link><Link href="/about">Privacy Policy</Link><Link href="/about">Refund Policy</Link></div>
-          <div><strong>Stay updated</strong><p>Get the latest courses, tips & updates</p><form><input type="email" placeholder="Enter your email" /><button>Subscribe</button></form></div>
+      <LearningSteps home />
+
+      <section className="home-credential-section">
+        <div className="home-credential-content">
+          <span className="home-credential-kicker">YOUR SKILLS, VERIFIED</span>
+          <h2>Make your progress <em>easy to share.</em></h2>
+          <p>Pass your course assessment to earn a certificate with verification details. Download it, add it to your resume, or share it with employers and your professional network.</p>
+          <Link href="/courses" className="sc-btn sc-btn-green">Explore certificate courses <span aria-hidden="true">›</span></Link>
         </div>
-        <small className="sc-copyright">© 2026 SkillCert AI. All rights reserved.</small>
-      </footer>
+        <div className="home-credential-art">
+          <img src="/images/skillcert-institute-certificate.svg" alt="SkillCert AI certificate with QR verification" />
+        </div>
+      </section>
+
+      <section className="home-outcomes-section">
+        <div className="home-outcomes-head">
+          <span>TAKE YOUR NEXT STEP</span>
+          <h2>Put your new skills to work.</h2>
+          <p>A certificate is a clear record of what you learned and completed. Bring it into the places where your next opportunity begins.</p>
+        </div>
+        <div className="home-outcomes-grid">
+          <article><span>01</span><h3>Strengthen your resume</h3><p>Add your completed course and certificate to show the skills you have been building.</p></article>
+          <article><span>02</span><h3>Share your progress</h3><p>Include your certificate in a professional profile or portfolio so others can review it.</p></article>
+          <article><span>03</span><h3>Talk about what you learned</h3><p>Use your lessons and assessment experience to explain your skills with confidence.</p></article>
+        </div>
+      </section>
+
+      {/* 3. Unified Footer */}
+      <Footer />
     </main>
   );
 }

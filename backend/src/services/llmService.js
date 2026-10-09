@@ -79,10 +79,22 @@ function getOpenAIClient() {
  * Text generation model environment variable se lega.
  */
 function getTextModel() {
-  const model = isGroqProvider()
+  const configuredModel = isGroqProvider()
     ? process.env.GROQ_TEXT_MODEL ||
-      "llama-3.3-70b-versatile"
+      "openai/gpt-oss-120b"
     : process.env.OPENAI_TEXT_MODEL;
+
+  // Keep old local environments working after Groq retired Llama 3.3 70B.
+  const model = isGroqProvider() &&
+    configuredModel === "llama-3.3-70b-versatile"
+    ? "openai/gpt-oss-120b"
+    : configuredModel;
+
+  if (model !== configuredModel) {
+    console.warn(
+      `Groq model ${configuredModel} is retired; using ${model}.`
+    );
+  }
 
   if (!model) {
     throw new AppError(
@@ -490,7 +502,8 @@ Important rules:
 2. Return only valid JSON.
 3. Do not return markdown.
 4. Keep the summary useful for generating assessments.
-5. Extract only meaningful educational topics.
+5. Extract 3 to 8 meaningful educational topics from the transcript.
+6. Never return an empty topics array when the transcript contains educational material.
 `,
 
     input: `
@@ -502,7 +515,8 @@ Return this exact JSON structure:
   "summary": "A clear summary of the video content",
   "topics": [
     "Topic 1",
-    "Topic 2"
+    "Topic 2",
+    "Topic 3"
   ],
   "keyPoints": [
     "Important point 1",
