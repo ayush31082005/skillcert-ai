@@ -6,3 +6,10 @@ services:
     buildCommand: npm install && npm run build
     startCommand: npm start
     healthCheckPath: /api/health
+    envVars:
+      - key: CLIENT_URL
+        value: https://skillcert-ai-six.vercel.app
+      - key: FRONTEND_URL
+        value: https://skillcert-ai-six.vercel.app
+      - key: API_BASE_URL
+        value: https://skillcert-ai-1.onrender.com

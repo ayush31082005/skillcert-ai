@@ -7,6 +7,10 @@ import QRCode from "qrcode";
 import Certificate from "../models/Certificate.js";
 import CertificateTemplate from "../models/CertificateTemplate.js";
 import Test from "../models/Test.js";
+import {
+  getApiBaseUrl,
+  getFrontendUrl,
+} from "../config/env.js";
 import { AppError } from "../utils/apiResponse.js";
 import generateCertificateId from "../utils/generateCertificateId.js";
 
@@ -587,7 +591,7 @@ export async function generateCertificateForTest(
     generateCertificateId();
 
   const verificationUrl =
-    `${String(process.env.FRONTEND_URL).replace(/\/+$/, "")}/verify/` +
+    `${getFrontendUrl().replace(/\/+$/, "")}/verify/` +
     certificateId;
 
   const fileName = `${certificateId}.pdf`;
@@ -598,7 +602,7 @@ export async function generateCertificateForTest(
   );
 
   const certificateUrl =
-    `${String(process.env.API_BASE_URL).replace(/\/+$/, "")}/uploads/` +
+    `${getApiBaseUrl().replace(/\/+$/, "")}/uploads/` +
     `certificates/${fileName}`;
 
   const issuedAt =
