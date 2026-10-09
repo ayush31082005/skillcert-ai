@@ -19,14 +19,21 @@ export function validateEnvironment() {
 }
 
 export function getClientUrls() {
-  const configuredUrls =
-    process.env.CLIENT_URL ||
-    process.env.FRONTEND_URL ||
-    DEFAULT_FRONTEND_URL;
+  const configuredUrls = [
+    DEFAULT_FRONTEND_URL,
+    process.env.CLIENT_URL || "",
+    process.env.FRONTEND_URL || "",
+  ].flatMap((value) => value.split(","));
 
-  return configuredUrls.split(",")
-    .map((url) => url.trim())
-    .filter(Boolean);
+  return [...new Set(configuredUrls
+    .map((value) => {
+      try {
+        return new URL(value.trim()).origin;
+      } catch {
+        return "";
+      }
+    })
+    .filter(Boolean))];
 }
 
 export function getFrontendUrl() {
