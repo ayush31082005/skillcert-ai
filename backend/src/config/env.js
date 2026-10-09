@@ -1,7 +1,6 @@
 const requiredVariables = [
   "MONGODB_URI",
   "JWT_SECRET",
-  "CLIENT_URL",
   "API_BASE_URL",
   "FRONTEND_URL",
 ];
@@ -19,7 +18,10 @@ export function validateEnvironment() {
 }
 
 export function getClientUrls() {
-  return process.env.CLIENT_URL.split(",")
+  const configuredUrls =
+    process.env.CLIENT_URL || process.env.FRONTEND_URL || "";
+
+  return configuredUrls.split(",")
     .map((url) => url.trim())
     .filter(Boolean);
 }
