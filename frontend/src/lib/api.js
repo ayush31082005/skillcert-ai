@@ -1,4 +1,4 @@
-const PRODUCTION_API_URL = "https://skillcert-ai-1.onrender.com/api";
+const PRODUCTION_API_URL = "/api";
 const LOCAL_API_URL = "http://localhost:5000/api";
 
 const API_URL = (
