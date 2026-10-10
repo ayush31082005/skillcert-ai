@@ -8038,6 +8038,7 @@ small {
 
 .student-layout .card,
 .student-layout .stat-card,
+.student-layout .student-record-card,
 .student-layout .feature-card,
 .student-layout .course-card,
 .student-layout .learning-card {
@@ -8045,6 +8046,24 @@ small {
   background: var(--workspace-panel);
   border-color: var(--workspace-border);
   box-shadow: 0 12px 32px rgba(0,0,0,.2);
+}
+
+.student-layout .student-record-card .record-details span {
+  border-bottom-color: rgba(255,255,255,.1);
+}
+
+.student-layout .student-record-card .record-actions .btn-outline {
+  color: #e8bd73 !important;
+  -webkit-text-fill-color: #e8bd73 !important;
+  background: #1d1d1d !important;
+  border-color: rgba(200,145,58,.42) !important;
+  opacity: 1 !important;
+}
+
+.student-layout .student-record-card .record-actions .btn-outline:hover {
+  color: #15110a !important;
+  -webkit-text-fill-color: #15110a !important;
+  background: #d9a044 !important;
 }
 
 .student-layout .stat-card small,
