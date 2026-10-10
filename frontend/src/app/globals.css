@@ -7872,6 +7872,192 @@ small {
 }
 
 /* Admin workspace: unified dark and gold theme */
+.student-layout {
+  --workspace-bg: #0d0d0d;
+  --workspace-panel: #171717;
+  --workspace-panel-raised: #1d1d1d;
+  --workspace-border: rgba(200, 145, 58, .2);
+  --workspace-text: #fbf8f3;
+  --workspace-muted: #aaa49a;
+  min-height: 100vh;
+  color: var(--workspace-text);
+  background: var(--workspace-bg);
+}
+
+.student-layout .sidebar {
+  color: var(--workspace-text);
+  background: #101a16;
+  border-right: 1px solid var(--workspace-border);
+}
+
+.student-layout .sidebar .sc-logo strong {
+  color: var(--workspace-text) !important;
+}
+
+.student-layout .sidebar-nav a {
+  color: #c5c0b7;
+  border: 1px solid transparent;
+}
+
+.student-layout .sidebar-nav a:hover,
+.student-layout .sidebar-nav a.active {
+  color: #f2c16c;
+  border-color: var(--workspace-border);
+  background: rgba(200,145,58,.12);
+}
+
+.student-layout .nav-symbol {
+  color: #d9a044;
+}
+
+.student-layout .sidebar-foot {
+  border-color: var(--workspace-border);
+}
+
+.student-layout .sidebar-foot small {
+  color: var(--workspace-muted);
+}
+
+.student-layout .sidebar-foot strong {
+  color: var(--workspace-text);
+}
+
+.student-layout .sidebar-logout,
+.student-layout .user-chip .btn-outline {
+  color: #e8bd73;
+  background: transparent;
+  border-color: rgba(200,145,58,.42);
+}
+
+.student-layout .sidebar-logout:hover,
+.student-layout .user-chip .btn-outline:hover {
+  color: #111;
+  background: #d9a044;
+}
+
+.student-layout .topbar {
+  color: var(--workspace-text);
+  background: rgba(18,18,18,.94);
+  border-bottom-color: var(--workspace-border);
+}
+
+.student-layout .search-box:before {
+  content: "";
+}
+
+.student-layout .search-box input,
+.student-layout .input,
+.student-layout .select,
+.student-layout .textarea {
+  color: var(--workspace-text);
+  background: #111;
+  border-color: rgba(255,255,255,.14);
+}
+
+.student-layout .search-box input::placeholder {
+  color: #8e887e;
+}
+
+.student-layout .user-chip strong,
+.student-layout .user-chip small {
+  color: var(--workspace-text) !important;
+}
+
+.student-layout .user-avatar {
+  color: #111;
+  background: #c8913a;
+}
+
+.student-layout .content {
+  color: var(--workspace-text);
+}
+
+.student-layout .content .eyebrow {
+  color: #d9a044;
+}
+
+.student-layout .content h1,
+.student-layout .content h2,
+.student-layout .content h3,
+.student-layout .content h4,
+.student-layout .content strong,
+.student-layout .content label {
+  color: var(--workspace-text);
+}
+
+.student-layout .content p,
+.student-layout .content small,
+.student-layout .content .muted {
+  color: var(--workspace-muted);
+}
+
+.student-layout .card,
+.student-layout .stat-card,
+.student-layout .feature-card,
+.student-layout .course-card,
+.student-layout .learning-card {
+  color: var(--workspace-text);
+  background: var(--workspace-panel);
+  border-color: var(--workspace-border);
+  box-shadow: 0 12px 32px rgba(0,0,0,.2);
+}
+
+.student-layout .stat-card small,
+.student-layout .learning-card-body > span {
+  color: var(--workspace-muted);
+}
+
+.student-layout .stat-card strong {
+  color: #e5ad4e;
+}
+
+.student-layout .stat-icon,
+.student-layout .feature-icon {
+  color: #e5ad4e;
+  background: rgba(200,145,58,.13);
+}
+
+.student-layout .learning-card:hover {
+  border-color: rgba(200,145,58,.55);
+  background: var(--workspace-panel-raised);
+}
+
+.student-layout .learning-thumb {
+  background-color: #25231f;
+}
+
+.student-layout .progress-track {
+  background: rgba(255,255,255,.1);
+}
+
+.student-layout .progress-track span {
+  background: #d9a044;
+}
+
+.student-layout .activity-row {
+  border-color: rgba(255,255,255,.09);
+}
+
+.student-layout .activity-heading > a,
+.student-layout .content a:not(.btn):not(.lesson-item):not(.activity-row) {
+  color: #e5ad4e;
+}
+
+.student-layout .btn-primary {
+  color: #15110a;
+  background: #c8913a;
+  box-shadow: 0 7px 18px rgba(200,145,58,.2);
+}
+
+.student-layout .btn-primary:hover {
+  background: #e0aa51;
+}
+
+.student-layout .empty,
+.student-layout .loading {
+  color: var(--workspace-muted);
+}
+
 .admin-layout {
   --admin-bg: #0d0d0d;
   --admin-panel: #171717;

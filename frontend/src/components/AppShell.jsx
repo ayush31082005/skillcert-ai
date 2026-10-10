@@ -84,7 +84,7 @@ export default function AppShell({ children, admin = false }) {
   };
 
   return (
-    <div className={`app-layout${admin ? " admin-layout" : ""}`}>
+    <div className={`app-layout ${admin ? "admin-layout" : "student-layout"}`}>
       <aside className="sidebar">
         <Brand dark />
         <div className="sidebar-nav">
