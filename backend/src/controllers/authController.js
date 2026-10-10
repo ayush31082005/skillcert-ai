@@ -89,7 +89,7 @@ export async function login(request, response) {
 
   if (!email || !password) {
     throw new AppError(
-      "Email aur password required hain",
+      "Enter your email address and password.",
       400
     );
   }
@@ -100,7 +100,7 @@ export async function login(request, response) {
 
   if (!user) {
     throw new AppError(
-      "Is email se account nahi mila. Email check karein ya account create karein.",
+      "Email address not found. Check it or create an account.",
       401
     );
   }
@@ -112,14 +112,14 @@ export async function login(request, response) {
 
   if (!passwordMatches) {
     throw new AppError(
-      "Password galat hai. Dobara check karke try karein.",
+      "Incorrect password. Please try again.",
       401
     );
   }
 
   if (!user.isActive) {
     throw new AppError(
-      "Aapka account inactive hai",
+      "Your account is inactive. Please contact support.",
       403
     );
   }

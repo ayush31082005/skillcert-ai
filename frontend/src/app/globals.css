@@ -8155,6 +8155,47 @@ small {
   color: var(--workspace-muted);
 }
 
+.app-toast {
+  position: fixed;
+  z-index: 10000;
+  top: max(18px, env(safe-area-inset-top));
+  right: max(18px, env(safe-area-inset-right));
+  width: min(440px, calc(100vw - 36px));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 16px 18px;
+  color: #fbf8f3;
+  background: #191817;
+  border: 1px solid rgba(200,145,58,.5);
+  border-left: 4px solid #d35c50;
+  border-radius: 12px;
+  box-shadow: 0 16px 44px rgba(0,0,0,.4);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.app-toast button {
+  flex: none;
+  padding: 0 2px;
+  border: 0;
+  color: #e8bd73;
+  background: transparent;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+@media (max-width: 560px) {
+  .app-toast {
+    top: max(12px, env(safe-area-inset-top));
+    right: 12px;
+    width: calc(100vw - 24px);
+  }
+}
+
 .admin-layout {
   --admin-bg: #0d0d0d;
   --admin-panel: #171717;
