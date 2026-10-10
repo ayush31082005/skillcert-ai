@@ -8022,6 +8022,29 @@ small {
   background: var(--workspace-panel-raised);
 }
 
+.student-layout .content .option {
+  color: var(--workspace-text);
+  background: #22201c;
+  border-color: rgba(200,145,58,.28);
+}
+
+.student-layout .content .option:hover,
+.student-layout .content .option.selected {
+  color: var(--workspace-text);
+  background: rgba(200,145,58,.14);
+  border-color: rgba(200,145,58,.62);
+}
+
+.student-layout .content input[type="radio"],
+.student-layout .content input[type="checkbox"] {
+  accent-color: #d9a044;
+}
+
+.student-layout .content .question-top,
+.student-layout .content .question-top span {
+  color: var(--workspace-muted);
+}
+
 .student-layout .learning-thumb {
   background-color: #25231f;
 }
