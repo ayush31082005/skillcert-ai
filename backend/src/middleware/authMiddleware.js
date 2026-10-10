@@ -4,17 +4,12 @@ import User from "../models/User.js";
 import { AppError } from "../utils/apiResponse.js";
 
 export async function protect(request, response, next) {
-  let token = request.cookies?.skillcert_token;
-
   const authorization = request.headers.authorization;
-
-  if (
-    !token &&
+  let token =
     authorization &&
     authorization.startsWith("Bearer ")
-  ) {
-    token = authorization.split(" ")[1];
-  }
+      ? authorization.slice("Bearer ".length).trim()
+      : request.cookies?.skillcert_token;
 
   if (!token) {
     return next(
