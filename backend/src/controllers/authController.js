@@ -100,7 +100,7 @@ export async function login(request, response) {
 
   if (!user) {
     throw new AppError(
-      "Email ya password galat hai",
+      "Is email se account nahi mila. Email check karein ya account create karein.",
       401
     );
   }
@@ -112,7 +112,7 @@ export async function login(request, response) {
 
   if (!passwordMatches) {
     throw new AppError(
-      "Email ya password galat hai",
+      "Password galat hai. Dobara check karke try karein.",
       401
     );
   }
