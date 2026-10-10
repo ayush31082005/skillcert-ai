@@ -1,11 +1,6 @@
-const PRODUCTION_API_URL = "/api";
-const LOCAL_API_URL = "http://localhost:5000/api";
-
-const API_URL = (
-  process.env.NODE_ENV === "production"
-    ? PRODUCTION_API_URL
-    : process.env.NEXT_PUBLIC_API_URL || LOCAL_API_URL
-).replace(/\/+$/, "");
+// All environments use the frontend origin. Next.js proxies /api to the
+// backend so auth cookies and requests stay same-origin in local and prod.
+const API_URL = "/api";
 
 const SESSION_TOKEN_KEY = "skillcert_token";
 
