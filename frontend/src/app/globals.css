@@ -7972,6 +7972,19 @@ small {
   color: var(--workspace-text);
 }
 
+.student-layout .question-shell {
+  padding-top: 14px;
+}
+
+.student-layout .question-nav .btn:disabled {
+  color: #a7a096 !important;
+  background: #292824 !important;
+  border-color: rgba(200,145,58,.24) !important;
+  box-shadow: none !important;
+  opacity: 1;
+  cursor: not-allowed;
+}
+
 .student-layout .content .eyebrow {
   color: #d9a044;
 }
