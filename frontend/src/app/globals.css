@@ -7976,6 +7976,18 @@ small {
   padding-top: 14px;
 }
 
+.student-layout .result-hero .btn-outline {
+  color: #15110a !important;
+  -webkit-text-fill-color: #15110a !important;
+  background: #d9a044 !important;
+  border: 1px solid #efbd69 !important;
+  opacity: 1 !important;
+}
+
+.student-layout .result-hero .btn-outline:hover {
+  background: #efb957 !important;
+}
+
 .student-layout .question-nav .btn:disabled {
   -webkit-appearance: none !important;
   appearance: none !important;
