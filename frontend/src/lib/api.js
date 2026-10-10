@@ -47,6 +47,8 @@ export async function apiRequest(path, options = {}) {
      */
     if (
       response.status === 401 &&
+      !path.startsWith("/auth/login") &&
+      !path.startsWith("/auth/register") &&
       typeof window !== "undefined"
     ) {
       clearSessionToken();
