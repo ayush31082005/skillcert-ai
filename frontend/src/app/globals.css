@@ -7977,10 +7977,14 @@ small {
 }
 
 .student-layout .question-nav .btn:disabled {
-  color: #a7a096 !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  -webkit-text-fill-color: #fbf8f3 !important;
+  color: #fbf8f3 !important;
   background: #292824 !important;
-  border-color: rgba(200,145,58,.24) !important;
+  border: 1px solid rgba(200,145,58,.38) !important;
   box-shadow: none !important;
+  filter: none !important;
   opacity: 1;
   cursor: not-allowed;
 }
