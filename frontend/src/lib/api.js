@@ -7,6 +7,20 @@ const API_URL = (
     : process.env.NEXT_PUBLIC_API_URL || LOCAL_API_URL
 ).replace(/\/+$/, "");
 
+const SESSION_TOKEN_KEY = "skillcert_token";
+
+export function saveSessionToken(token) {
+  if (typeof window !== "undefined" && token) {
+    window.sessionStorage.setItem(SESSION_TOKEN_KEY, token);
+  }
+}
+
+export function clearSessionToken() {
+  if (typeof window !== "undefined") {
+    window.sessionStorage.removeItem(SESSION_TOKEN_KEY);
+  }
+}
+
 export async function apiRequest(path, options = {}) {
   const {
     returnErrorResponse = false,
@@ -14,12 +28,17 @@ export async function apiRequest(path, options = {}) {
   } = options;
   const isFormData =
     fetchOptions.body instanceof FormData;
+  const token =
+    typeof window !== "undefined"
+      ? window.sessionStorage.getItem(SESSION_TOKEN_KEY)
+      : null;
   const response = await fetch(`${API_URL}${path}`, {
     credentials: "include",
     cache: "no-store",
     ...fetchOptions,
     headers: {
       ...(isFormData ? {} : { "Content-Type": "application/json" }),
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...(fetchOptions.headers || {}),
     },
   });
@@ -35,6 +54,7 @@ export async function apiRequest(path, options = {}) {
       response.status === 401 &&
       typeof window !== "undefined"
     ) {
+      clearSessionToken();
       const currentPath =
         window.location.pathname +
         window.location.search;

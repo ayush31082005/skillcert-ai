@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { apiRequest } from "@/lib/api";
+import { apiRequest, clearSessionToken } from "@/lib/api";
 import MainHeader, { Logo } from "./MainHeader";
 import Footer from "./Footer";
 
@@ -74,7 +74,12 @@ export default function AppShell({ children, admin = false }) {
   }, [admin, pathname, router]);
 
   const logout = async () => {
-    await apiRequest("/auth/logout", { method: "POST" }).catch(() => {});
+    try {
+      await apiRequest("/auth/logout", { method: "POST" });
+    } catch {
+      // Clear the browser session even if the backend logout request fails.
+    }
+    clearSessionToken();
     router.push("/login");
   };
 
